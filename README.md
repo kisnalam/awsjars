@@ -52,16 +52,42 @@ import com.amazonaws.auth.BasicAWSCredentials
 
 Paste the below code in to the jupyter cell and change the Access keys :
 
-val AWS_ACCESS_KEY_ID = "<Access key>"
-val AWS_SECRET_ACCESS_KEY = "<Access secret>" 
-val credentials = new BasicAWSCredentials(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-val s3 = new AmazonS3Client(credentials)
-val usWest2 = Region.getRegion(Regions.US_WEST_2)
-s3.setRegion(usWest2)
+  val AWS_ACCESS_KEY_ID = "<Access key>"
+  val AWS_SECRET_ACCESS_KEY = "<Access secret>" 
+  val credentials = new BasicAWSCredentials(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+  val s3 = new AmazonS3Client(credentials)
+  val usEast1 = Region.getRegion(Regions.US_EAST_1)
+  println(usEast1)
+  val bucketName = "fromjupyter2"
+  val key = "MyObjectKeyjupyter2"
+  s3.setRegion(usEast1)
+  s3.createBucket(bucketName)
+  val file = File.createTempFile("aws-scala", ".txt")
+        val writer = new OutputStreamWriter(new FileOutputStream(file))
+        writer.write("abcdefghijklmnopqrstuvwxyz\n")
+        writer.write("01234567890112345678901234\n")
+        writer.write("!@#$%^&*()-=[]{};':',.<>/?\n")
+        writer.write("01234567890112345678901234\n")
+        writer.write("abcdefghijklmnopqrstuvwxyz\n")
+        writer.close()
+ println(file)
   for (bucket <- s3.listBuckets()) {
         println(" - " + bucket.getName)
-      }    
-
+      }
+  println("Uploading a new object to S3 from a file\n")
+  s3.putObject(new PutObjectRequest(bucketName, key, file))
+  println("Downloading a existing object from S3\n")
+  val `object` = s3.getObject(new GetObjectRequest(bucketName, key))
+  println("Content-Type: "  + `object`.getObjectMetadata().getContentType())
+  val reader = new BufferedReader(new InputStreamReader(`object`.getObjectContent()))
+        breakable {
+        while (true) {
+            val line = reader.readLine()
+            if (line == null)
+              break
+            println("    " + line)
+        }
+        }
 ####NOTE: Depending on the code changes you might need to add other imports and Jars to yout notebook.
 
 ```
