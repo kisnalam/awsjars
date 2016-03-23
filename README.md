@@ -1,5 +1,6 @@
 
 #Problem : How to access various aws resources from a jupyter notebook.
+#### Look at Screenshot1,Screenshot2,Screenshot3 to have a visual look at the output from a jupyter notebook invoked using Spark as a service on IBM bluemix.
 
 
 Add the following jars to your notebook at minumum for below example to work:
@@ -62,4 +63,5 @@ s3.setRegion(usWest2)
       }    
 
 ####NOTE: Depending on the code changes you might need to add other imports and Jars to yout notebook.
+
 ```
